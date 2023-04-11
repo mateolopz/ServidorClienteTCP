@@ -32,11 +32,13 @@ def client(filename):
         print(end-start)
 def main():
     numClientes = input("Ingrese el numero de clientes\n")
-    filename = input("Ingrese 1 si quiere enviar el archivo de 100 MB o 2 para el de 250 MB\n")
+    filename = input("Ingrese 1 si quiere enviar el archivo de 100 MB, 2 para el de 250 MB o 3 para enviar un archivo de prueba de 10 MB\n")
     if int(filename) == 1:
-        filename = "pruebapequeña.txt"
+        filename = "100.txt"
     elif int(filename) == 2:
-        filename = "pruebagrande.txt"
+        filename = "250.txt"
+    elif int(filename) == 3:
+        filename = "10.txt"
     else:
         print("Numero invalido")
     s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
