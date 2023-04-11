@@ -5,7 +5,7 @@ import hashlib
 import time
 
 BUFFER_SIZE = 4096
-host = "192.168.89.131"
+host = "127.0.0.1"
 port = 5001
 
 def client(filename):
@@ -31,7 +31,19 @@ def client(filename):
         end = time.time()
         print(end-start)
 def main():
-    numClientes = input("numero clientes\n")
+    numClientes = input("Ingrese el numero de clientes\n")
+    filename = input("Ingrese 1 si quiere enviar el archivo de 100 MB o 2 para el de 250 MB\n")
+    if int(filename) == 1:
+        filename = "pruebapequeña.txt"
+    elif int(filename) == 2:
+        filename = "pruebagrande.txt"
+    else:
+        print("Numero invalido")
+    s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+    s.connect((host, port))
+    s.send(f"{filename}:{numClientes}".encode())
+    #s.close()
+    
     for i in range(int(numClientes)):
         nombre = f"Cliente{i}-Prueba-{numClientes}.txt"
         thread = threading.Thread(target=client, args=(nombre,))

@@ -5,18 +5,11 @@ import threading
 import time
 import hashlib
 
-SERVER_HOST = "192.168.89.131"
+SERVER_HOST = "127.0.0.1"
 SERVER_PORT = 5001
 BUFFER_SIZE = 4096
 
-
-s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-s.bind((SERVER_HOST, SERVER_PORT))
-
 lock = threading.Lock()
-
-s.listen(25)
-print(f"[*] Listening as {SERVER_HOST}:{SERVER_PORT}")
 
 def handle_client(conn,addr,filename, barrera, nombreLog):
     exito = False
@@ -57,15 +50,19 @@ def log(cliente, exito, tiempo, nombreLog):
     lock.release()
 
 def main():
+    s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+    s.bind((SERVER_HOST, SERVER_PORT))
+    s.listen(25)
+    print(f"[*] Listening as {SERVER_HOST}:{SERVER_PORT}")
+    filename = None
+    numClientes = None
+    while True:
+        conn, addr = s.accept()
+        received = conn.recv(BUFFER_SIZE).decode()
+        filename, numClientes = received.split(":")
+        conn.close()
+        break
     nombreLog = datetime.now().strftime("%d-%m-%Y-%H-%M-%S")
-    numClientes = input("Numero clientes\n")
-    filename = input("Ingrese 1 si quiere enviar el archivo de 100 MB o 2 para el de 250 MB\n")
-    if int(filename) == 1:
-        filename = "pruebapequeña.txt"
-    elif int(filename) == 2:
-        filename = "pruebagrande.txt"
-    else:
-        print("Numero invalido")
     filesize = os.path.getsize(filename)
     barrera = threading.Barrier(int(numClientes))
     texto = ["Archivo enviado: " + filename + "\n", "Tamaño del archivo: " + str(filesize) + "\n"]
